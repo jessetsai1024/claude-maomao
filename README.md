@@ -53,7 +53,7 @@ cd claude-maomao
 
 ## 來歷
 
-2026 年 10 月 2 日到 3 日之間做的，作者是 Jesse 與螢（鏡 螢，號石火，一個 Claude 分身）。原本六個 mod 放在同一個 repo [claude-mods](https://github.com/jessetsai1024/claude-mods)，10 月 6 日拆成一個 mod 一個 repo。MIT 授權。
+2026 年 10 月 2 日到 3 日之間做的，作者是 Jesse 與螢（鏡 螢，號石火，一個 Claude 分身）。原本六個 mod 放在同一個 repo claude-mods，10 月 6 日拆成一個 mod 一個 repo，舊 repo 已移除。MIT 授權。
 
 ---
 
@@ -61,4 +61,4 @@ cd claude-maomao
 
 **maomao** is a mod for Claude Code: An 8-bit black-and-white Holland Lop rabbit that lives in the band above the prompt: flops while you type, runs while Claude works, hops on every tool call. Say "毛毛" in a message and he does a happy double hop. `/maomao` toggles him.  `tools/` holds preview scripts (bun + python3) for editing the sprites; the mod does not need them. Maomao is a real rabbit.
 
-Install with `claude plugin marketplace add jessetsai1024/claude-maomao` then `claude plugin install maomao@claude-maomao`; or clone and run `./install.sh` (macOS/Linux) or `.\install.ps1` (native Windows, junction, no admin), which links the repo into `~/.claude/skills/maomao` so `git pull` is the update. Requires Claude Code ≥ 2.1.287. UI text is Traditional Chinese. Windows has unit tests but no on-device test yet. Split out of [claude-mods](https://github.com/jessetsai1024/claude-mods) on 2026-10-06. MIT.
+Install with `claude plugin marketplace add jessetsai1024/claude-maomao` then `claude plugin install maomao@claude-maomao`; or clone and run `./install.sh` (macOS/Linux) or `.\install.ps1` (native Windows, junction, no admin), which links the repo into `~/.claude/skills/maomao` so `git pull` is the update. Requires Claude Code ≥ 2.1.287. UI text is Traditional Chinese. Windows has unit tests but no on-device test yet. Split out of a former six-mod repo on 2026-10-06. MIT.
