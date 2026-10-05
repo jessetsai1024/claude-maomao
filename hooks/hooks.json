@@ -1,0 +1,4 @@
+{
+  "description": "毛毛的 hooks 模組",
+  "modules": ["./register.ts"]
+}
