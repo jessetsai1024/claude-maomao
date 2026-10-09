@@ -240,6 +240,30 @@ test('橫帶畫出跑道，/maomao 收起來再叫出來', async ($, on) => {
   await ui.unmount()
 })
 
+test('橫帶下面別的 mod 畫的東西不會被跑道蓋掉', async ($, on) => {
+  mock.store(on)
+  mock.clock(on)
+  on('ui.toast', () => ({ value: undefined }))
+  // 代替串在毛毛底下的另一個 mod（例如悄悄話）：畫一行字
+  on('ui.render', ($, e) => {
+    const { Text } = $.ui.resolve(e)
+
+    return Text({ children: ['♪ 悄悄話在這'] })
+  })
+
+  const ui = await $.ui.mount({
+    plugin: 'maomao',
+    surface: 'terminal',
+    component: 'AbovePrompt',
+    props: BAND,
+  })
+
+  expect((await ui.find({ type: 'Raster' }))?.props.rows).toBe(TRACK_ROWS)
+  expect(await ui.find({ text: '♪ 悄悄話在這' })).toBeDefined()
+
+  await ui.unmount()
+})
+
 test('桌面版沒有彩色格子元件，讓出橫帶不畫', async ($, on) => {
   engine(on)
 

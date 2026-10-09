@@ -15,7 +15,8 @@ const NAMES = ['毛毛', '乖毛']
  *   主人送出的訊息裡有「毛毛」或「乖毛」時，他會原地開心跳兩下。
  * 【何時能呼叫】引擎載入這個 mod 時呼叫一次；重新載入會再呼叫，毛毛回到攤平。
  * 【行為】只在終端機畫（彩色格子元件只有終端機有）；橫帶被問卷佔用、寬度不到 24 欄、
- *   或高度不到 5 列時不畫，讓出橫帶。收起與否存在 $.store，跨視窗、跨重開都記得。
+ *   或高度不到 5 列時不畫，讓出橫帶。畫的時候跑道放最上面，底下接著畫其他 mod（例如悄悄話）
+ *   與引擎自己要畫的東西，不會把它們蓋掉。收起與否存在 $.store，跨視窗、跨重開都記得。
  *   動畫靠計時器每 110 毫秒算一拍，畫面沒變就不送，所以攤平時幾乎不耗資源。
  */
 export const register: Register = on => {
@@ -89,7 +90,7 @@ export const register: Register = on => {
     return {}
   })
 
-  on('ui.render', { component: 'AbovePrompt' }, ($, e, next) => {
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     isWorking = e.props.isWorking
     const columns = Math.min(MAX_COLUMNS, e.props.bodyColumns)
     const hasRoom = columns >= MIN_COLUMNS && e.props.maxRows >= TRACK_ROWS
@@ -100,11 +101,13 @@ export const register: Register = on => {
       return next(e)
     }
 
-    const { Raster } = $.ui.resolve(e)
+    const { Box, Raster } = $.ui.resolve(e)
     mounted = { requestId: e.requestId, columns }
     lastCells = cellsOf(columns, poseOf(actor))
+    const track = Raster({ key: TRACK, columns, rows: TRACK_ROWS, cells: lastCells })
+    const below = await next(e)
 
-    return Raster({ key: TRACK, columns, rows: TRACK_ROWS, cells: lastCells })
+    return Box({ flexDirection: 'column', children: [track, below] })
   })
 }
 
@@ -117,4 +120,7 @@ export const register: Register = on => {
 //   而 render hook 不能寫 $.state。只有「收起來」要跨視窗記住，放 $.store。
 // 2026-10-02 靜態檢查規定 $ 不能存進變數、不能傳給別檔的函式，所以動作規則（actor.ts）
 //   與畫圖（sprites.ts）都寫成不收 $ 的純函式；預覽像素圖的腳本在 tools/（用法見 tools/README.md）。
+// 2026-10-09 AbovePrompt 的 hook 一定要 await next(e) 再把結果疊在跑道底下：橫帶每個 mod 的 hook 串成一條，
+//   誰在外層由引擎決定；之前毛毛直接回 Raster 不呼叫 next，毛毛在外層時悄悄話（whisper）整個不見，
+//   主人 10/9 發現「開著毛毛就看不到悄悄話」。whisper 那邊本來就會 await next 再畫自己，所以兩邊順序怎麼排都看得到。
 // #endregion
